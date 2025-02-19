@@ -2,8 +2,22 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function NumberMatch() {
-  const [puzzle, setPuzzle] = useState([1, 2, 3, 4, 5, 6, 7, 8, null]);
   const navigate = useNavigate();
+
+  // Function to shuffle the puzzle initially
+  const generateShuffledPuzzle = () => {
+    let numbers = [1, 2, 3, 4, 5, 6, 7, 8, null];
+
+    // Fisher-Yates Shuffle Algorithm
+    for (let i = numbers.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
+    }
+
+    return numbers;
+  };
+
+  const [puzzle, setPuzzle] = useState(generateShuffledPuzzle());
 
   const handleTileClick = (index) => {
     const emptyIndex = puzzle.indexOf(null);
@@ -36,15 +50,7 @@ function NumberMatch() {
   };
 
   const shufflePuzzle = () => {
-    const shuffledPuzzle = [...puzzle];
-    for (let i = shuffledPuzzle.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffledPuzzle[i], shuffledPuzzle[j]] = [
-        shuffledPuzzle[j],
-        shuffledPuzzle[i],
-      ];
-    }
-    setPuzzle(shuffledPuzzle);
+    setPuzzle(generateShuffledPuzzle());
   };
 
   return (
@@ -95,6 +101,8 @@ function NumberMatch() {
               fontWeight: "bold",
               cursor: tile === null ? "default" : "pointer",
               transition: "background-color 0.3s",
+              width: "100px",
+              height: "100px",
             }}
             onClick={() => handleTileClick(index)}
           >
