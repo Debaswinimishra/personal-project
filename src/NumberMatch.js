@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function NumberMatch() {
   const [puzzle, setPuzzle] = useState([1, 2, 3, 4, 5, 6, 7, 8, null]);
+  const navigate = useNavigate();
 
   const handleTileClick = (index) => {
     const emptyIndex = puzzle.indexOf(null);
@@ -53,12 +55,23 @@ function NumberMatch() {
         alignItems: "center",
         justifyContent: "center",
         minHeight: "100vh",
-        backgroundColor: "#282c34",
+        background: "linear-gradient(to bottom right, #43e97b, #38f9d7)",
         color: "white",
         textAlign: "center",
       }}
     >
-      <h1>Sliding Puzzle Game</h1>
+      <h1
+        style={{
+          fontFamily: "Arial, sans-serif",
+          fontSize: "36px",
+          fontWeight: "bold",
+          color: "black",
+          textShadow: "2px 2px 5px rgba(0, 0, 0, 0.3)",
+          letterSpacing: "2px",
+        }}
+      >
+        Sliding Puzzle Game
+      </h1>
       <div
         style={{
           display: "grid",
@@ -89,22 +102,38 @@ function NumberMatch() {
           </div>
         ))}
       </div>
-      <button
-        onClick={shufflePuzzle}
-        style={{
-          marginTop: "20px",
-          padding: "10px 20px",
-          fontSize: "16px",
-          cursor: "pointer",
-          backgroundColor: "#61dafb",
-          border: "none",
-          borderRadius: "5px",
-          color: "#282c34",
-          fontWeight: "bold",
-        }}
-      >
-        Shuffle
-      </button>
+      <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
+        <button
+          onClick={shufflePuzzle}
+          style={{
+            padding: "10px 20px",
+            fontSize: "16px",
+            cursor: "pointer",
+            backgroundColor: "#61dafb",
+            border: "none",
+            borderRadius: "5px",
+            color: "#282c34",
+            fontWeight: "bold",
+          }}
+        >
+          Shuffle
+        </button>
+        <button
+          onClick={() => navigate(-1)}
+          style={{
+            padding: "10px 20px",
+            fontSize: "16px",
+            cursor: "pointer",
+            backgroundColor: "#ff6b6b",
+            border: "none",
+            borderRadius: "5px",
+            color: "white",
+            fontWeight: "bold",
+          }}
+        >
+          Back
+        </button>
+      </div>
     </div>
   );
 }

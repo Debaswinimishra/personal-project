@@ -1,149 +1,128 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useNavigate,
+} from "react-router-dom";
+import Puzzle from "./Puzzle";
+import NumberMatch from "./NumberMatch";
 
-function App() {
-  // Card data: pairs of words
-  const cardData = [
-    "❤️",
-    "❤️",
-    "😎",
-    "😎",
-    "😶‍🌫️",
-    "😶‍🌫️",
-    "🍜",
-    "🍜",
-    "🤡",
-    "🤡",
-    "👽",
-    "👽",
-  ];
-
-  // State to track opened cards and matched cards
-  const [cards, setCards] = useState([]); // Shuffled cards
-  const [flippedIndices, setFlippedIndices] = useState([]); // Indices of currently flipped cards
-  const [matchedIndices, setMatchedIndices] = useState([]); // Indices of matched cards
-
-  // Shuffle cards on component mount
-  useEffect(() => {
-    shuffleCards();
-  }, []);
-
-  // Shuffle the cards
-  const shuffleCards = () => {
-    const shuffled = [...cardData].sort(() => Math.random() - 0.5);
-    setCards(shuffled);
-    setFlippedIndices([]);
-    setMatchedIndices([]);
-  };
-
-  // Handle card click
-  const handleCardClick = (index) => {
-    // Don't allow more than 2 cards to be flipped at once
-    if (
-      flippedIndices.length === 2 ||
-      flippedIndices.includes(index) ||
-      matchedIndices.includes(index)
-    ) {
-      return;
-    }
-
-    // Flip the card
-    const newFlippedIndices = [...flippedIndices, index];
-    setFlippedIndices(newFlippedIndices);
-
-    // Check for a match if two cards are flipped
-    if (newFlippedIndices.length === 2) {
-      const [firstIndex, secondIndex] = newFlippedIndices;
-      if (cards[firstIndex] === cards[secondIndex]) {
-        // Match found: add to matched indices
-        setMatchedIndices([...matchedIndices, firstIndex, secondIndex]);
-        setFlippedIndices([]);
-      } else {
-        // No match: flip cards back after a delay
-        setTimeout(() => {
-          setFlippedIndices([]);
-        }, 1000);
-      }
-    }
-  };
-
-  // Check if all cards are matched
-  useEffect(() => {
-    if (matchedIndices.length === cards.length && cards.length > 0) {
-      alert("Congratulations! You matched all the cards!");
-    }
-  }, [matchedIndices, cards]);
+function Home() {
+  const navigate = useNavigate();
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        minHeight: "100vh",
-        backgroundColor: "#282c34",
-        color: "white",
-        textAlign: "center",
-      }}
-    >
-      <h1>Matching Puzzle Game</h1>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(4, 100px)",
-          gridTemplateRows: "repeat(3, 100px)",
-          gap: "10px",
-          margin: "20px",
-        }}
-      >
-        {cards.map((card, index) => (
-          <div
-            key={index}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor:
-                flippedIndices.includes(index) || matchedIndices.includes(index)
-                  ? "#61dafb"
-                  : "#444",
-              border: "2px solid #282c34",
-              borderRadius: "10px",
-              fontSize: "24px",
-              fontWeight: "bold",
-              cursor: "pointer",
-              transition: "background-color 0.3s, transform 0.3s",
-              transform:
-                flippedIndices.includes(index) || matchedIndices.includes(index)
-                  ? "rotateY(180deg)"
-                  : "rotateY(0)",
-            }}
-            onClick={() => handleCardClick(index)}
+    <div style={styles.container}>
+      <h1 style={styles.heading}>WELCOME TO THE GAME ZONE</h1>
+      <p style={styles.subHeading}>Choose your game to get started</p>
+      <div style={styles.cardContainer}>
+        <div style={styles.card}>
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/2503/2503383.png"
+            alt="Puzzle"
+            style={styles.image}
+          />
+          <h2 style={styles.cardTitle}>Puzzle Game</h2>
+          <p style={styles.cardText}>Solve puzzles and challenge yourself.</p>
+          <button style={styles.button} onClick={() => navigate("/puzzle")}>
+            Play
+          </button>
+        </div>
+
+        <div style={styles.card}>
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/2910/2910764.png"
+            alt="Number Match"
+            style={styles.image}
+          />
+          <h2 style={styles.cardTitle}>Number Match</h2>
+          <p style={styles.cardText}>Match numbers to win the game.</p>
+          <button
+            style={styles.button}
+            onClick={() => navigate("/numberMatch")}
           >
-            {flippedIndices.includes(index) || matchedIndices.includes(index)
-              ? card
-              : ""}
-          </div>
-        ))}
+            Play
+          </button>
+        </div>
       </div>
-      <button
-        onClick={shuffleCards}
-        style={{
-          marginTop: "20px",
-          padding: "10px 20px",
-          fontSize: "16px",
-          cursor: "pointer",
-          backgroundColor: "#61dafb",
-          border: "none",
-          borderRadius: "5px",
-          color: "#282c34",
-          fontWeight: "bold",
-        }}
-      >
-        Restart Game
-      </button>
     </div>
   );
 }
 
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/puzzle" element={<Puzzle />} />
+        <Route path="/numberMatch" element={<NumberMatch />} />
+      </Routes>
+    </Router>
+  );
+}
+
 export default App;
+const styles = {
+  container: {
+    textAlign: "center",
+    fontFamily: "'Poppins', sans-serif",
+    background: "linear-gradient(to bottom right, #8A2BE2, #00D4FF)", // Sleek gaming vibe
+    minHeight: "100vh",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: "20px",
+  },
+  heading: {
+    color: "white",
+    fontSize: "28px",
+    fontWeight: "bold",
+    marginBottom: "10px",
+  },
+  subHeading: {
+    color: "white",
+    fontSize: "16px",
+    marginBottom: "30px",
+  },
+  cardContainer: {
+    display: "flex",
+    justifyContent: "center",
+    gap: "20px",
+    flexWrap: "wrap",
+  },
+  card: {
+    background: "white",
+    padding: "20px",
+    borderRadius: "12px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+    width: "250px",
+    textAlign: "center",
+    transition: "transform 0.3s ease-in-out",
+  },
+  cardTitle: {
+    fontSize: "18px",
+    fontWeight: "bold",
+    marginBottom: "8px",
+  },
+  cardText: {
+    fontSize: "14px",
+    color: "#555",
+    marginBottom: "10px",
+  },
+  image: {
+    width: "50px",
+    height: "50px",
+    marginBottom: "10px",
+  },
+  button: {
+    background: "linear-gradient(to bottom right, #8A2BE2, #00D4FF)",
+    color: "white",
+    border: "none",
+    padding: "10px 15px",
+    borderRadius: "5px",
+    fontSize: "14px",
+    cursor: "pointer",
+    transition: "background 0.3s ease-in-out",
+  },
+};
