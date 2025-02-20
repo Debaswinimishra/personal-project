@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Confetti from "react-confetti";
 
 function Puzzle() {
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ function Puzzle() {
   const [cards, setCards] = useState([]);
   const [flippedIndices, setFlippedIndices] = useState([]);
   const [matchedIndices, setMatchedIndices] = useState([]);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   useEffect(() => {
     shuffleCards();
@@ -38,6 +40,7 @@ function Puzzle() {
     setCards(shuffled);
     setFlippedIndices([]);
     setMatchedIndices([]);
+    setShowConfetti(false);
   };
 
   const handleCardClick = (index) => {
@@ -56,12 +59,12 @@ function Puzzle() {
       const [firstIndex, secondIndex] = newFlippedIndices;
       if (cards[firstIndex] === cards[secondIndex]) {
         setMatchedIndices([...matchedIndices, firstIndex, secondIndex]);
-        setFlippedIndices([]);
-      } else {
-        setTimeout(() => {
-          setFlippedIndices([]);
-        }, 1000);
+        setShowConfetti(true);
+        setTimeout(() => setShowConfetti(false), 2200);
       }
+      setTimeout(() => {
+        setFlippedIndices([]);
+      }, 1000);
     }
   };
 
@@ -85,6 +88,7 @@ function Puzzle() {
         padding: "20px",
       }}
     >
+      {showConfetti && <Confetti />}
       <h1
         style={{
           fontFamily: "Arial, sans-serif",
@@ -93,7 +97,6 @@ function Puzzle() {
           color: "black",
           textShadow: "2px 2px 5px rgba(0, 0, 0, 0.3)",
           letterSpacing: "2px",
-          textAlign: "center",
         }}
       >
         Matching Puzzle Game
@@ -106,6 +109,7 @@ function Puzzle() {
           gridGap: "10px",
           margin: "20px",
           maxWidth: "400px",
+          position: "relative",
         }}
       >
         {cards.map((card, index) => (
@@ -127,6 +131,7 @@ function Puzzle() {
               transition: "background-color 0.3s, transform 0.3s",
               width: "70px",
               height: "70px",
+              position: "relative",
             }}
             onClick={() => handleCardClick(index)}
           >
@@ -137,14 +142,7 @@ function Puzzle() {
         ))}
       </div>
 
-      <div
-        style={{
-          display: "flex",
-          gap: "10px",
-          marginTop: "20px",
-          flexWrap: "wrap",
-        }}
-      >
+      <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
         <button
           onClick={shuffleCards}
           style={{
