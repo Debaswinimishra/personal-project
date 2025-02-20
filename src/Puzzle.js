@@ -17,6 +17,12 @@ function Puzzle() {
     "🤡",
     "👽",
     "👽",
+    "👻",
+    "👻",
+    "🎁",
+    "🎁",
+    "🦚",
+    "🦚",
   ];
 
   const [cards, setCards] = useState([]);
@@ -76,16 +82,18 @@ function Puzzle() {
         background: "linear-gradient(to bottom right, #ff9a9e, #fad0c4)",
         color: "white",
         textAlign: "center",
+        padding: "20px",
       }}
     >
       <h1
         style={{
           fontFamily: "Arial, sans-serif",
-          fontSize: "36px",
+          fontSize: "28px",
           fontWeight: "bold",
           color: "black",
           textShadow: "2px 2px 5px rgba(0, 0, 0, 0.3)",
           letterSpacing: "2px",
+          textAlign: "center",
         }}
       >
         Matching Puzzle Game
@@ -94,10 +102,10 @@ function Puzzle() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(4, 100px)",
-          gridTemplateRows: "repeat(3, 100px)",
-          gap: "10px",
+          gridTemplateColumns: "repeat(3, 1fr)",
+          gridGap: "10px",
           margin: "20px",
+          maxWidth: "400px",
         }}
       >
         {cards.map((card, index) => (
@@ -117,10 +125,8 @@ function Puzzle() {
               fontWeight: "bold",
               cursor: "pointer",
               transition: "background-color 0.3s, transform 0.3s",
-              transform:
-                flippedIndices.includes(index) || matchedIndices.includes(index)
-                  ? "rotateY(180deg)"
-                  : "rotateY(0)",
+              width: "70px",
+              height: "70px",
             }}
             onClick={() => handleCardClick(index)}
           >
@@ -130,19 +136,27 @@ function Puzzle() {
           </div>
         ))}
       </div>
-      <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
+
+      <div
+        style={{
+          display: "flex",
+          gap: "10px",
+          marginTop: "20px",
+          flexWrap: "wrap",
+        }}
+      >
         <button
           onClick={shuffleCards}
           style={{
-            marginTop: "20px",
-            padding: "10px 20px",
-            fontSize: "16px",
+            padding: "10px 15px",
+            fontSize: "14px",
             cursor: "pointer",
             backgroundColor: "#61dafb",
             border: "none",
             borderRadius: "5px",
             color: "#282c34",
             fontWeight: "bold",
+            width: "120px",
           }}
         >
           Restart Game
@@ -150,15 +164,15 @@ function Puzzle() {
         <button
           onClick={() => navigate(-1)}
           style={{
-            marginTop: "20px",
-            padding: "10px 20px",
-            fontSize: "16px",
+            padding: "10px 15px",
+            fontSize: "14px",
             cursor: "pointer",
             backgroundColor: "#61dafb",
             border: "none",
             borderRadius: "5px",
             color: "#282c34",
             fontWeight: "bold",
+            width: "120px",
           }}
         >
           Back
