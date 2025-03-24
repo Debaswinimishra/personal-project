@@ -62,7 +62,7 @@ const TicTacToe = () => {
     if (newLine.length > 0) {
       setWinningLine(newLine);
       setShowConfetti(true);
-      // Add 3-second delay before showing popup
+
       setTimeout(() => {
         setShowPopup(true);
       }, 3000);
