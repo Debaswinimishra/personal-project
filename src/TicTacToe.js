@@ -66,7 +66,7 @@ const TicTacToe = () => {
       setTimeout(() => {
         setShowPopup(true);
       }, 3000);
-      setTimeout(() => setShowConfetti(false), 3000);
+      setTimeout(() => setShowConfetti(false), 2000);
     } else if (!newBoard.includes(null)) {
       // Add 3-second delay for draw popup
       setTimeout(() => {
