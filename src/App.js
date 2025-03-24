@@ -49,12 +49,12 @@ function Home() {
 
         <div style={styles.card}>
           <img
-            src="https://cdn-icons-png.flaticon.com/512/2910/2910764.png"
-            alt="Number Match"
+            src="https://cdn-icons-png.flaticon.com/512/1086/1086534.png"
+            alt="TicTac Toe"
             style={styles.image}
           />
           <h2 style={styles.cardTitle}>TicTac Toe</h2>
-          <p style={styles.cardText}>Match numbers to win the game.</p>
+          <p style={styles.cardText}>Get three in a row to win.</p>
           <button style={styles.button} onClick={() => navigate("/ticTacToe")}>
             Play
           </button>
