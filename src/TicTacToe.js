@@ -155,9 +155,9 @@ const TicTacToe = () => {
           <div style={getLineStyle(winningLine)}></div>
         )}
       </div>
-      {/* <h3>
+      <h3 style={{ color: "white" }}>
         {winner ? `Winner: ${winner}` : `Next Player: ${isXNext ? "X" : "O"}`}
-      </h3> */}
+      </h3>
       <div
         style={{
           marginTop: "60px",
