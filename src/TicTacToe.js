@@ -1,11 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Confetti from "react-confetti";
 
 const TicTacToe = () => {
   const [board, setBoard] = useState(Array(9).fill(null));
   const [isXNext, setIsXNext] = useState(true);
   const [winningLine, setWinningLine] = useState([]);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [windowSize, setWindowSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const checkWinner = (squares) => {
     const lines = [
@@ -38,9 +57,15 @@ const TicTacToe = () => {
     newBoard[index] = isXNext ? "X" : "O";
     setBoard(newBoard);
     setIsXNext(!isXNext);
-    const { line: newLine } = checkWinner(newBoard);
+    const { line: newLine, winner: newWinner } = checkWinner(newBoard);
+
     if (newLine.length > 0) {
       setWinningLine(newLine);
+      setShowConfetti(true);
+      setShowPopup(true);
+      setTimeout(() => setShowConfetti(false), 5000);
+    } else if (!newBoard.includes(null)) {
+      setShowPopup(true);
     }
   };
 
@@ -48,15 +73,17 @@ const TicTacToe = () => {
     setBoard(Array(9).fill(null));
     setIsXNext(true);
     setWinningLine([]);
+    setShowConfetti(false);
+    setShowPopup(false);
   };
 
   const getLineStyle = (line) => {
     if (line.length === 0) return {};
     const [a, b, c] = line;
-    const rowIndex = Math.floor(a / 3);
-    const colIndex = a % 3;
 
-    if (a % 3 === 0 && b % 3 === 0 && c % 3 === 0) {
+    // Check for vertical lines (columns)
+    if (a % 3 === b % 3 && a % 3 === c % 3) {
+      const colIndex = a % 3;
       return {
         position: "absolute",
         left: `${colIndex * 33.33 + 16.5}%`,
@@ -66,10 +93,13 @@ const TicTacToe = () => {
         backgroundColor: "red",
         transform: "translateX(-50%)",
       };
-    } else if (
-      rowIndex === Math.floor(b / 3) &&
-      rowIndex === Math.floor(c / 3)
+    }
+    // Check for horizontal lines (rows)
+    else if (
+      Math.floor(a / 3) === Math.floor(b / 3) &&
+      Math.floor(a / 3) === Math.floor(c / 3)
     ) {
+      const rowIndex = Math.floor(a / 3);
       return {
         position: "absolute",
         top: `${rowIndex * 33.33 + 16.5}%`,
@@ -79,7 +109,9 @@ const TicTacToe = () => {
         backgroundColor: "red",
         transform: "translateY(-50%)",
       };
-    } else if (a === 0 && b === 4 && c === 8) {
+    }
+    // Check for diagonal (top-left to bottom-right)
+    else if (a === 0 && b === 4 && c === 8) {
       return {
         position: "absolute",
         top: "7%",
@@ -90,7 +122,9 @@ const TicTacToe = () => {
         transform: "rotate(45deg)",
         transformOrigin: "0 0",
       };
-    } else if (a === 2 && b === 4 && c === 6) {
+    }
+    // Check for diagonal (top-right to bottom-left)
+    else if (a === 2 && b === 4 && c === 6) {
       return {
         position: "absolute",
         top: "7%",
@@ -109,7 +143,6 @@ const TicTacToe = () => {
     <div
       style={{
         textAlign: "center",
-        // marginTop: "20px",
         position: "relative",
         height: "100vh",
         display: "flex",
@@ -117,8 +150,18 @@ const TicTacToe = () => {
         alignItems: "center",
         justifyContent: "center",
         background: "linear-gradient(135deg, #0f0c29, #302b63, #24243e)",
+        overflow: "hidden",
       }}
     >
+      {showConfetti && (
+        <Confetti
+          width={windowSize.width}
+          height={windowSize.height}
+          recycle={false}
+          numberOfPieces={500}
+        />
+      )}
+
       <h2 style={{ color: "white" }}>Tic Tac Toe</h2>
       <div
         style={{
@@ -156,15 +199,19 @@ const TicTacToe = () => {
         )}
       </div>
       <h3 style={{ color: "white" }}>
-        {winner ? `Winner: ${winner}` : `Next Player: ${isXNext ? "X" : "O"}`}
+        {winner
+          ? `Winner: ${winner}`
+          : !board.includes(null)
+          ? "Game ended in a draw!"
+          : `Next Player: ${isXNext ? "X" : "O"}`}
       </h3>
       <div
         style={{
           marginTop: "60px",
           display: "flex",
-          gap: "15px", // Space between buttons
-          justifyContent: "center", // Center align buttons
-          flexWrap: "wrap", // Ensures responsiveness on small screens
+          gap: "15px",
+          justifyContent: "center",
+          flexWrap: "wrap",
         }}
       >
         <button
@@ -200,6 +247,92 @@ const TicTacToe = () => {
           Back
         </button>
       </div>
+
+      {showPopup && (
+        <div
+          style={{
+            position: "fixed",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            background: "white",
+            padding: "30px",
+            borderRadius: "15px",
+            boxShadow: "0 0 25px rgba(0,0,0,0.4)",
+            zIndex: 100,
+            textAlign: "center",
+            width: "300px",
+            maxWidth: "90%",
+          }}
+        >
+          {winner ? (
+            <>
+              <h2 style={{ margin: "0 0 20px", color: "#302b63" }}>
+                🎉 {winner} Wins! 🎉
+              </h2>
+              <button
+                onClick={() => {
+                  setShowPopup(false);
+                  resetGame();
+                }}
+                style={{
+                  padding: "12px 25px",
+                  fontSize: "16px",
+                  background: "linear-gradient(135deg, #302b63, #24243e)",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "8px",
+                  cursor: "pointer",
+                  fontWeight: "bold",
+                  boxShadow: "0 3px 6px rgba(0,0,0,0.2)",
+                  transition: "transform 0.2s",
+                }}
+                onMouseOver={(e) =>
+                  (e.currentTarget.style.transform = "scale(1.05)")
+                }
+                onMouseOut={(e) =>
+                  (e.currentTarget.style.transform = "scale(1)")
+                }
+              >
+                Play Again
+              </button>
+            </>
+          ) : (
+            <>
+              <h2 style={{ margin: "0 0 20px", color: "#302b63" }}>
+                😊 It's a Draw! 😊
+              </h2>
+              <p style={{ marginBottom: "20px" }}>No one wins this time!</p>
+              <button
+                onClick={() => {
+                  setShowPopup(false);
+                  resetGame();
+                }}
+                style={{
+                  padding: "12px 25px",
+                  fontSize: "16px",
+                  background: "linear-gradient(135deg, #FF512F, #DD2476)",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "8px",
+                  cursor: "pointer",
+                  fontWeight: "bold",
+                  boxShadow: "0 3px 6px rgba(0,0,0,0.2)",
+                  transition: "transform 0.2s",
+                }}
+                onMouseOver={(e) =>
+                  (e.currentTarget.style.transform = "scale(1.05)")
+                }
+                onMouseOut={(e) =>
+                  (e.currentTarget.style.transform = "scale(1)")
+                }
+              >
+                Try Again
+              </button>
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 };
