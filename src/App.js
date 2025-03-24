@@ -7,6 +7,8 @@ import {
 } from "react-router-dom";
 import Puzzle from "./Puzzle";
 import NumberMatch from "./NumberMatch";
+// import WordGame from "./TicTacToe";
+import TicTacToe from "./TicTacToe";
 
 function Home() {
   const navigate = useNavigate();
@@ -44,6 +46,19 @@ function Home() {
             Play
           </button>
         </div>
+
+        <div style={styles.card}>
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/2910/2910764.png"
+            alt="Number Match"
+            style={styles.image}
+          />
+          <h2 style={styles.cardTitle}>TicTac Toe</h2>
+          <p style={styles.cardText}>Match numbers to win the game.</p>
+          <button style={styles.button} onClick={() => navigate("/ticTacToe")}>
+            Play
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -56,6 +71,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/puzzle" element={<Puzzle />} />
         <Route path="/numberMatch" element={<NumberMatch />} />
+        <Route path="/ticTacToe" element={<TicTacToe />} />
       </Routes>
     </Router>
   );
